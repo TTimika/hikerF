@@ -2043,8 +2043,18 @@ function getFastestDomain(input) {
     } else {
         let urlsFind = urls.map(h => h.replace(/https?:\/\//, '').replace(/:\d+/, '').replace(/\/$/, ''));
         var reachableRaw = findReachableIP(urlsFind, 2000);
-        var url = urls.find(item => item.includes(reachableRaw));
-        return pad(url);
+        if (reachableRaw) {
+            var url = urls.find(item => item.includes(reachableRaw));
+            return pad(url);
+        } else {
+            for (let url of urls) {
+                let res = fetch(url, {
+                    onlyHeaders: true
+                });
+                log(res);
+                if (res) return url;
+            }return '';
+        }
     }
 }
 
